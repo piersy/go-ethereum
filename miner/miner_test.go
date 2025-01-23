@@ -19,7 +19,6 @@ package miner
 
 import (
 	"math/big"
-	"sync"
 	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -95,16 +94,10 @@ func (bc *testBlockChain) SubscribeChainHeadEvent(ch chan<- core.ChainHeadEvent)
 
 func TestBuildPendingBlocks(t *testing.T) {
 	miner := createMiner(t)
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		block, _, _ := miner.Pending()
-		if block == nil {
-			t.Error("Pending failed")
-		}
-	}()
-	wg.Wait()
+	block, _, _ := miner.Pending()
+	if block == nil {
+		t.Error("Pending failed")
+	}
 }
 
 func minerTestGenesisBlock(period uint64, gasLimit uint64, faucet common.Address) *core.Genesis {
